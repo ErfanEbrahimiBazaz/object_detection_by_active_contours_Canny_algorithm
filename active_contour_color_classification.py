@@ -76,8 +76,9 @@ def apply_classifier_svm(frame):
     :param frame: input frame to apply the classifier.
     :return: Color of the input frame (car's color)
     """
-    loaded_model = pickle.load(open('svm_color_classifier.pkl', 'rb'))
-    hist = extract_features_hist(frame, 9)
+    # loaded_model = pickle.load(open('svm_color_classifier.pkl', 'rb')) # bins = 9
+    loaded_model = pickle.load(open('svm_color_classifier_poly.pkl', 'rb')) # bins = 24
+    hist = extract_features_hist(frame, 24)
     result = loaded_model.predict(np.array(hist).reshape(1, -1))
     return result
 
@@ -116,7 +117,7 @@ def draw_contor(src_gray, thresh):
             mask_tmp[y:y + h, x:x + w] = 255
             predicted_contour = cv.bitwise_and(frame_input, frame_input, mask=mask_tmp)
             print('Predicted contour shape {}'.format(predicted_contour.shape))
-            car_feature = extract_features_hist(predicted_contour, 9)
+            car_feature = extract_features_hist(predicted_contour, 24) # p for the other classifier
             predicted_color = apply_classifier_svm(car_feature)
             print('Predicted color is {}'.format(predicted_color[0]))
             # mask is only for imshow purposes
